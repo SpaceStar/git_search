@@ -54,7 +54,7 @@ public class InfoActivity extends AppCompatActivity {
         TextView name = findViewById(R.id.user);
         TextView repository = findViewById(R.id.repository);
 
-        name.setText(getIntent().getStringExtra("userName"));
-        repository.setText(getIntent().getStringExtra("repositoryName"));
+        name.setText("Username: " + getIntent().getStringExtra("userName"));
+        repository.setText("Repository: " + getIntent().getStringExtra("repositoryName"));
     }
 }
