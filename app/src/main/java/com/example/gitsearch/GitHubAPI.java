@@ -55,7 +55,7 @@ public class GitHubAPI {
         Call<SearchResults> getByUrl(@Url String url);
     }
 
-    private class HeaderInterceptor implements Interceptor {
+    private static class HeaderInterceptor implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();

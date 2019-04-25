@@ -17,7 +17,7 @@ public class SearchResults {
         return items;
     }
 
-    public class Item {
+    public static class Item {
         private String name;
         private Owner owner;
 
@@ -29,7 +29,7 @@ public class SearchResults {
             return owner;
         }
 
-        public class Owner {
+        public static class Owner {
             private String login;
             @SerializedName("avatar_url")
             private String avatarUrl;
