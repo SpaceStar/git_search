@@ -36,6 +36,7 @@
         android:text="repo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user" />
+
     <android.support.constraint.Group
         android:id="@+id/content"
         android:layout_width="wrap_content"
@@ -56,4 +57,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
