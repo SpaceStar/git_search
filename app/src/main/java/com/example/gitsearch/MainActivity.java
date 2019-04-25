@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         content = new RepositoryAdapter(this);
         recyclerView.setAdapter(content);
 
-        api = new GitHubAPI();
+        api = GitHubAPI.getInstance();
         final Callback<SearchResults> resultsHandler = new Callback<SearchResults>() {
             @Override
             public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {

@@ -11,14 +11,23 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public class GitHubAPI {
+    private static GitHubAPI instance;
+
     private GitHubService service;
 
-    public GitHubAPI() {
+    private GitHubAPI() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(GitHubService.class);
+    }
+
+    public static synchronized GitHubAPI getInstance() {
+        if (instance == null) {
+            instance = new GitHubAPI();
+        }
+        return instance;
     }
 
     public GitHubService getService() {
