@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SearchResults> call, Throwable t) {
                 errorToast.show();
+                progressBar.setVisibility(View.GONE);
                 downloading = false;
             }
         };
