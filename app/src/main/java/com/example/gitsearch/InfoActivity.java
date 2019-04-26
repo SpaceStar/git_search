@@ -40,7 +40,12 @@ public class InfoActivity extends AppCompatActivity {
                         }
                     });
                 } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(InfoActivity.this, "error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 runOnUiThread(new Runnable() {
                     @Override
