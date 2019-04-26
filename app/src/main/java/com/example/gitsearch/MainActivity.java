@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.gitsearch.models.SearchResults;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -60,14 +61,19 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
-                    content.addItems(response.body().getItems());
-                    String links = response.headers().get("Link");
-                    Map<String, String> map = parseLinkHeader(links);
-                    if (map.containsKey("next")) {
-                        nextUrl = map.get("next");
-                        haveMoreItems = true;
+                    List<SearchResults.Item> items = response.body().getItems();
+                    if (items.isEmpty()) {
+                        Toast.makeText(MainActivity.this, "no results found", Toast.LENGTH_SHORT).show();
                     } else {
-                        haveMoreItems = false;
+                        content.addItems(items);
+                        String links = response.headers().get("Link");
+                        Map<String, String> map = parseLinkHeader(links);
+                        if (map.containsKey("next")) {
+                            nextUrl = map.get("next");
+                            haveMoreItems = true;
+                        } else {
+                            haveMoreItems = false;
+                        }
                     }
                 } else {
                     errorToast.show();
