@@ -20,9 +20,9 @@ public class InfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
-        final ImageView photo = findViewById(R.id.avatar);
-        final ProgressBar progressBar = findViewById(R.id.downloadProgress);
-        final Group content = findViewById(R.id.content);
+        final ImageView userPhoto = findViewById(R.id.infoUserPhoto);
+        final ProgressBar progressBar = findViewById(R.id.infoDownloadProgress);
+        final Group content = findViewById(R.id.infoContent);
 
         new Thread(new Runnable() {
             @Override
@@ -34,7 +34,7 @@ public class InfoActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            photo.setImageBitmap(bmImage);
+                            userPhoto.setImageBitmap(bmImage);
                             progressBar.setVisibility(View.GONE);
                             content.setVisibility(View.VISIBLE);
                         }
@@ -51,10 +51,10 @@ public class InfoActivity extends AppCompatActivity {
             }
         }).start();
 
-        TextView name = findViewById(R.id.user);
-        TextView repository = findViewById(R.id.repository);
+        TextView name = findViewById(R.id.infoUsername);
+        TextView repository = findViewById(R.id.infoRepositoryName);
 
-        name.setText(getString(R.string.username_output, getIntent().getStringExtra("userName")));
+        name.setText(getString(R.string.username_output, getIntent().getStringExtra("username")));
         repository.setText(getString(R.string.repository_output, getIntent().getStringExtra("repositoryName")));
     }
 }

@@ -32,13 +32,13 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
         repoClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageView photo = v.findViewById(R.id.userPhoto);
-                TextView username = v.findViewById(R.id.username);
-                TextView repositoryName = v.findViewById(R.id.repositoryName);
+                ImageView userPhoto = v.findViewById(R.id.itemUserPhoto);
+                TextView username = v.findViewById(R.id.itemUsername);
+                TextView repositoryName = v.findViewById(R.id.itemRepositoryName);
 
                 Intent intent = new Intent(mActivity.getApplicationContext(), InfoActivity.class);
-                intent.putExtra("photoUrl", (String) photo.getTag());
-                intent.putExtra("userName", username.getText());
+                intent.putExtra("photoUrl", (String) userPhoto.getTag());
+                intent.putExtra("username", username.getText());
                 intent.putExtra("repositoryName", repositoryName.getText());
                 mActivity.startActivity(intent);
             }
@@ -70,17 +70,17 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
     @Override
     public void onBindViewHolder(@NonNull final RepositoryViewHolder repositoryViewHolder, int i) {
         if (i == 0) {
-            repositoryViewHolder.divider.setVisibility(View.GONE);
+            repositoryViewHolder.hideDivider();
         } else {
-            repositoryViewHolder.divider.setVisibility(View.VISIBLE);
+            repositoryViewHolder.showDivider();
         }
-        repositoryViewHolder.getRepositoryName().setText(repositories.get(i).getName());
-        repositoryViewHolder.getUsername().setText(repositories.get(i).getOwner().getLogin());
+        SearchResults.Item repository = repositories.get(i);
+        repositoryViewHolder.getRepositoryName().setText(repository.getName());
+        repositoryViewHolder.getUsername().setText(repository.getOwner().getLogin());
         repositoryViewHolder.getUserPhoto().setImageResource(android.R.color.transparent);
-        final String url = repositories.get(i).getOwner().getAvatarUrl();
+        final String url = repository.getOwner().getAvatarUrl();
         repositoryViewHolder.getUserPhoto().setTag(url);
 
-        boolean downloaded = false;
         final Bitmap bmImage = photos.get(i);
         if (bmImage != null) {
             mActivity.runOnUiThread(new Runnable() {
@@ -89,9 +89,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
                     repositoryViewHolder.getUserPhoto().setImageBitmap(bmImage);
                 }
             });
-            downloaded = true;
-        }
-        if (!downloaded) {
+        } else {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -126,10 +124,10 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
 
         public RepositoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            userPhoto = itemView.findViewById(R.id.userPhoto);
-            username = itemView.findViewById(R.id.username);
-            repositoryName = itemView.findViewById(R.id.repositoryName);
-            divider = itemView.findViewById(R.id.divider);
+            userPhoto = itemView.findViewById(R.id.itemUserPhoto);
+            username = itemView.findViewById(R.id.itemUsername);
+            repositoryName = itemView.findViewById(R.id.itemRepositoryName);
+            divider = itemView.findViewById(R.id.itemDivider);
         }
 
         public ImageView getUserPhoto() {
@@ -142,6 +140,14 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
 
         public TextView getRepositoryName() {
             return repositoryName;
+        }
+
+        public void hideDivider() {
+            divider.setVisibility(View.GONE);
+        }
+
+        public void showDivider() {
+            divider.setVisibility(View.VISIBLE);
         }
     }
 }

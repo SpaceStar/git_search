@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView recyclerView = findViewById(R.id.list);
-        searchText = findViewById(R.id.searchText);
+        RecyclerView recyclerView = findViewById(R.id.mainList);
+        searchText = findViewById(R.id.mainSearchText);
         progressBar = findViewById(R.id.toolbarProgress);
 
         errorToast = Toast.makeText(this, "error", Toast.LENGTH_SHORT);
