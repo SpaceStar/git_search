@@ -2,10 +2,13 @@ package com.example.gitsearch;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +28,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private RepositoryAdapter content;
+    private TextInputLayout searchTextLayout;
     private EditText searchText;
     private ProgressBar progressBar;
     private GitHubAPI api;
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         RecyclerView recyclerView = findViewById(R.id.mainList);
+        searchTextLayout = findViewById(R.id.mainSearchTextLayout);
         searchText = findViewById(R.id.mainSearchText);
         progressBar = findViewById(R.id.toolbarProgress);
 
@@ -94,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    if (searchText.getText().toString().equals("")) {
+                        searchTextLayout.setError(getString(R.string.emptySearchString));
+                        return false;
+                    }
                     haveMoreItems = false;
                     downloading = true;
                     content.clearItems();
@@ -103,6 +112,19 @@ public class MainActivity extends AppCompatActivity {
                     hideKeyboard(v);
                 }
                 return false;
+            }
+        });
+
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchTextLayout.setError(null);
             }
         });
 
