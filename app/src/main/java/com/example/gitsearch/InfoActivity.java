@@ -18,6 +18,7 @@ public class InfoActivity extends AppCompatActivity {
         String url = getIntent().getStringExtra("photoUrl");
         Glide.with(this)
                 .load(url)
+                .centerInside()
                 .into(userPhoto);
 
         TextView name = findViewById(R.id.infoUsername);
