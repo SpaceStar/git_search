@@ -8,6 +8,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 public class InfoActivity extends AppCompatActivity {
+    public static final String EXTRA_USERNAME = "username";
+    public static final String EXTRA_REPOSITORY_NAME = "repositoryName";
+    public static final String EXTRA_PHOTO_URL = "photoUrl";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,16 +18,16 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
 
         ImageView userPhoto = findViewById(R.id.infoUserPhoto);
-        String url = getIntent().getStringExtra("photoUrl");
+        String url = getIntent().getStringExtra(EXTRA_PHOTO_URL);
         Glide.with(this)
                 .load(url)
                 .centerInside()
                 .into(userPhoto);
 
-        TextView name = findViewById(R.id.infoUsername);
-        TextView repository = findViewById(R.id.infoRepositoryName);
+        TextView username = findViewById(R.id.infoUsername);
+        TextView repositoryName = findViewById(R.id.infoRepositoryName);
 
-        name.setText(getString(R.string.username_output, getIntent().getStringExtra("username")));
-        repository.setText(getString(R.string.repository_output, getIntent().getStringExtra("repositoryName")));
+        username.setText(getString(R.string.username_output, getIntent().getStringExtra(EXTRA_USERNAME)));
+        repositoryName.setText(getString(R.string.repository_output, getIntent().getStringExtra(EXTRA_REPOSITORY_NAME)));
     }
 }

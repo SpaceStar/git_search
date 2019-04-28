@@ -31,9 +31,9 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
                 TextView repositoryName = v.findViewById(R.id.itemRepositoryName);
 
                 Intent intent = new Intent(mActivity.getApplicationContext(), InfoActivity.class);
-                intent.putExtra("photoUrl", (String) username.getTag());
-                intent.putExtra("username", username.getText());
-                intent.putExtra("repositoryName", repositoryName.getText());
+                intent.putExtra(InfoActivity.EXTRA_PHOTO_URL, (String) username.getTag());
+                intent.putExtra(InfoActivity.EXTRA_USERNAME, username.getText());
+                intent.putExtra(InfoActivity.EXTRA_REPOSITORY_NAME, repositoryName.getText());
                 mActivity.startActivity(intent);
             }
         };

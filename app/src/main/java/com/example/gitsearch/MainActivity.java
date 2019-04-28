@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<SearchResults.Item> items = response.body().getItems();
                     if (items.isEmpty()) {
-                        Toast.makeText(MainActivity.this, "no results found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
                     } else {
                         content.addItems(items);
                         String links = response.headers().get("Link");
