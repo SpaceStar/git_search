@@ -123,7 +123,7 @@ public class MainFragment extends Fragment {
                         !downloading) {
                     if (searchText.getText().toString().equals("")) {
                         searchTextLayout.setError(getString(R.string.emptySearchString));
-                        return false;
+                        return true;
                     }
                     haveMoreItems = false;
                     downloading = true;
@@ -132,6 +132,7 @@ public class MainFragment extends Fragment {
 
                     api.getService().searchRepos(searchText.getText().toString()).enqueue(resultsHandler);
                     hideKeyboard(v);
+                    return true;
                 }
                 return false;
             }

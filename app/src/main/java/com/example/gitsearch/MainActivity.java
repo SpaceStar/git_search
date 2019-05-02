@@ -1,6 +1,7 @@
 package com.example.gitsearch;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -11,15 +12,16 @@ import android.widget.ProgressBar;
 import com.example.gitsearch.models.SearchResults;
 
 public class MainActivity extends AppCompatActivity implements
-        MainFragment.ProgressInterface, MainFragment.OnListClickListener {
+        MainFragment.ProgressInterface, MainFragment.OnListClickListener, InfoFragment.ToolbarInterface {
     private ProgressBar progressBar;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         progressBar = findViewById(R.id.toolbarProgress);
@@ -33,6 +35,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentById(R.id.mainContainer);
+        if (fragment instanceof InfoFragment) {
+            InfoFragment infoFragment = (InfoFragment)fragment;
+            if (infoFragment.minimizePhoto())
+                return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public void startProgress() {
         progressBar.setVisibility(View.VISIBLE);
     }
@@ -40,6 +54,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void stopProgress() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideToolbar() {
+        toolbar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showToolbar() {
+        toolbar.setVisibility(View.VISIBLE);
     }
 
     @Override

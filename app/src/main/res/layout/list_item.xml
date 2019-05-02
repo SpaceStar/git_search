@@ -33,6 +33,7 @@
             android:includeFontPadding="false"
             tools:text="Repository"
             android:textSize="16sp"
+            android:textColor="#000000"
             app:layout_constraintStart_toEndOf="@+id/itemUserPhoto"
             app:layout_constraintTop_toTopOf="parent" />
 
