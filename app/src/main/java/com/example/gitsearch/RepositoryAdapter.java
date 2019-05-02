@@ -1,7 +1,6 @@
 package com.example.gitsearch;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,23 +17,18 @@ import java.util.List;
 
 public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder> {
     private List<SearchResults.Item> repositories;
-    private final Activity mActivity;
+    private Activity activity;
     private View.OnClickListener repoClick;
 
     public RepositoryAdapter(Activity activity) {
         this.repositories = new ArrayList<>();
-        this.mActivity = activity;
+        this.activity = activity;
         repoClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView username = v.findViewById(R.id.itemUsername);
-                TextView repositoryName = v.findViewById(R.id.itemRepositoryName);
-
-                Intent intent = new Intent(mActivity.getApplicationContext(), InfoActivity.class);
-                intent.putExtra(InfoActivity.EXTRA_PHOTO_URL, (String) username.getTag());
-                intent.putExtra(InfoActivity.EXTRA_USERNAME, username.getText());
-                intent.putExtra(InfoActivity.EXTRA_REPOSITORY_NAME, repositoryName.getText());
-                mActivity.startActivity(intent);
+                RepositoryViewHolder holder = (RepositoryViewHolder) v.findViewById(R.id.itemUsername).getTag();
+                SearchResults.Item item = repositories.get(holder.getAdapterPosition());
+                ((MainFragment.OnListClickListener) RepositoryAdapter.this.activity).onItemSelect(item);
             }
         };
     }
@@ -68,8 +62,8 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
         repositoryViewHolder.getRepositoryName().setText(repository.getName());
         repositoryViewHolder.getUsername().setText(repository.getOwner().getLogin());
         String url = repository.getOwner().getAvatarUrl();
-        repositoryViewHolder.getUsername().setTag(url);
-        Glide.with(mActivity)
+        repositoryViewHolder.getUsername().setTag(repositoryViewHolder);
+        Glide.with(activity)
                 .load(url)
                 .circleCrop()
                 .into(repositoryViewHolder.getUserPhoto());

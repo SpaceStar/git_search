@@ -1,43 +1,18 @@
 package com.example.gitsearch;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.gitsearch.models.SearchResults;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity {
-    private RepositoryAdapter content;
-    private TextInputLayout searchTextLayout;
-    private EditText searchText;
+public class MainActivity extends AppCompatActivity implements
+        MainFragment.ProgressInterface, MainFragment.OnListClickListener {
     private ProgressBar progressBar;
-    private GitHubAPI api;
-
-    private Toast errorToast;
-
-    private boolean haveMoreItems = false;
-    private boolean downloading = false;
-    private String nextUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,122 +22,35 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView recyclerView = findViewById(R.id.mainList);
-        searchTextLayout = findViewById(R.id.mainSearchTextLayout);
-        searchText = findViewById(R.id.mainSearchText);
         progressBar = findViewById(R.id.toolbarProgress);
 
-        errorToast = Toast.makeText(this, "error", Toast.LENGTH_SHORT);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
 
-        recyclerView.setHasFixedSize(true);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        content = new RepositoryAdapter(this);
-        recyclerView.setAdapter(content);
-
-        api = GitHubAPI.getInstance();
-        final Callback<SearchResults> resultsHandler = new Callback<SearchResults>() {
-            @Override
-            public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
-                progressBar.setVisibility(View.GONE);
-                if (response.isSuccessful()) {
-                    List<SearchResults.Item> items = response.body().getItems();
-                    if (items.isEmpty()) {
-                        Toast.makeText(MainActivity.this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
-                    } else {
-                        content.addItems(items);
-                        String links = response.headers().get("Link");
-                        Map<String, String> map = parseLinkHeader(links);
-                        if (map.containsKey("next")) {
-                            nextUrl = map.get("next");
-                            haveMoreItems = true;
-                        } else {
-                            haveMoreItems = false;
-                        }
-                    }
-                } else {
-                    errorToast.show();
-                }
-                downloading = false;
-            }
-
-            @Override
-            public void onFailure(Call<SearchResults> call, Throwable t) {
-                errorToast.show();
-                progressBar.setVisibility(View.GONE);
-                downloading = false;
-            }
-        };
-
-        searchText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    if (searchText.getText().toString().equals("")) {
-                        searchTextLayout.setError(getString(R.string.emptySearchString));
-                        return false;
-                    }
-                    haveMoreItems = false;
-                    downloading = true;
-                    content.clearItems();
-                    progressBar.setVisibility(View.VISIBLE);
-
-                    api.getService().searchRepos(searchText.getText().toString()).enqueue(resultsHandler);
-                    hideKeyboard(v);
-                }
-                return false;
-            }
-        });
-
-        searchText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchTextLayout.setError(null);
-            }
-        });
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int visibleItemCount = linearLayoutManager.getChildCount();
-                int totalItemCount = linearLayoutManager.getItemCount();
-                int firstVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
-
-                if (!downloading && haveMoreItems) {
-                    if ((visibleItemCount+firstVisibleItems) >= totalItemCount - 2) {
-                        downloading = true;
-                        progressBar.setVisibility(View.VISIBLE);
-                        api.getService().getByUrl(nextUrl).enqueue(resultsHandler);
-                    }
-                }
-            }
-        });
+        MainFragment fragment = new MainFragment();
+        transaction.replace(R.id.mainContainer, fragment);
+        transaction.commit();
     }
 
-    private void hideKeyboard(View v) {
-        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    @Override
+    public void startProgress() {
+        progressBar.setVisibility(View.VISIBLE);
     }
 
-    private Map<String, String> parseLinkHeader(String string) {
-        Map<String, String> map = new HashMap<>();
-        if (string != null) {
-            String[] links = string.split(", ");
-            for (String link : links) {
-                String[] pair = link.split("; ");
-                String key = pair[1].substring(5, pair[1].length() - 1);
-                String value = pair[0].substring(1, pair[0].length() - 1);
-                map.put(key, value);
-            }
-        }
-        return map;
+    @Override
+    public void stopProgress() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onItemSelect(SearchResults.Item item) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        InfoFragment fragment = InfoFragment.getInstance(item.getOwner().getLogin(), item.getName(),
+                item.getOwner().getAvatarUrl());
+        transaction.replace(R.id.mainContainer, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
