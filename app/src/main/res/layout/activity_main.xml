@@ -7,8 +7,6 @@
     android:focusableInTouchMode="true"
     tools:context=".MainActivity">
 
-    <include layout="@layout/toolbar" />
-
     <FrameLayout
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"

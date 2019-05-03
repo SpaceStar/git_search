@@ -1,6 +1,5 @@
 package com.example.gitsearch;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,8 +17,6 @@ public class InfoFragment extends Fragment {
     public static final String EXTRA_REPOSITORY_NAME = "repositoryName";
     public static final String EXTRA_PHOTO_URL = "photoUrl";
 
-    private ToolbarInterface toolbar;
-
     private ImageView userPhoto;
     private boolean isFullscreen = false;
 
@@ -33,16 +30,6 @@ public class InfoFragment extends Fragment {
         instance.setArguments(args);
 
         return instance;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            toolbar = (ToolbarInterface) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ToolbarInterface");
-        }
     }
 
     @Nullable
@@ -73,18 +60,6 @@ public class InfoFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        toolbar.hideToolbar();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        toolbar.showToolbar();
-    }
-
     public boolean maximizePhoto() {
         if (!isFullscreen) {
             isFullscreen=true;
@@ -109,10 +84,5 @@ public class InfoFragment extends Fragment {
             return true;
         }
         return false;
-    }
-
-    public interface ToolbarInterface {
-        void hideToolbar();
-        void showToolbar();
     }
 }
