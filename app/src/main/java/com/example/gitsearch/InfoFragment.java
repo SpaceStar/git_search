@@ -1,5 +1,6 @@
 package com.example.gitsearch;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,9 +17,6 @@ public class InfoFragment extends Fragment {
     public static final String EXTRA_USERNAME = "username";
     public static final String EXTRA_REPOSITORY_NAME = "repositoryName";
     public static final String EXTRA_PHOTO_URL = "photoUrl";
-
-    private ImageView userPhoto;
-    private boolean isFullscreen = false;
 
     public static InfoFragment getInstance(String username, String repositoryName, String photoUrl) {
         InfoFragment instance = new InfoFragment();
@@ -37,7 +35,7 @@ public class InfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_info, container, false);
 
-        userPhoto = fragment.findViewById(R.id.infoUserPhoto);
+        ImageView userPhoto = fragment.findViewById(R.id.infoUserPhoto);
         String url = getArguments().getString(EXTRA_PHOTO_URL);
         Glide.with(this)
                 .load(url)
@@ -53,36 +51,24 @@ public class InfoFragment extends Fragment {
         userPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                maximizePhoto();
+                Activity activity = getActivity();
+                if (activity instanceof PhotoClickListener) {
+                    ((PhotoClickListener)activity).onClick((ImageView) v);
+                }
+            }
+        });
+
+        fragment.findViewById(R.id.infoBackground).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
         return fragment;
     }
 
-    public boolean maximizePhoto() {
-        if (!isFullscreen) {
-            isFullscreen=true;
-            ViewGroup.LayoutParams params = userPhoto.getLayoutParams();
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            userPhoto.setLayoutParams(params);
-            userPhoto.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean minimizePhoto() {
-        if (isFullscreen) {
-            isFullscreen=false;
-            ViewGroup.LayoutParams params = userPhoto.getLayoutParams();
-            params.width = 0;
-            params.height = 0;
-            userPhoto.setLayoutParams(params);
-            userPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            return true;
-        }
-        return false;
+    public interface PhotoClickListener {
+        void onClick(ImageView v);
     }
 }

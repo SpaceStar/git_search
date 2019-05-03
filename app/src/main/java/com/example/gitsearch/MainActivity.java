@@ -1,14 +1,15 @@
 package com.example.gitsearch;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 
 import com.example.gitsearch.models.SearchResults;
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnListClickListener {
+public class MainActivity extends AppCompatActivity implements
+        MainFragment.OnListClickListener, InfoFragment.PhotoClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,20 +20,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnLi
         FragmentTransaction transaction = manager.beginTransaction();
 
         MainFragment fragment = new MainFragment();
-        transaction.replace(R.id.mainContainer, fragment);
+        transaction.add(R.id.mainContainer, fragment);
         transaction.commit();
-    }
-
-    @Override
-    public void onBackPressed() {
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentById(R.id.mainContainer);
-        if (fragment instanceof InfoFragment) {
-            InfoFragment infoFragment = (InfoFragment)fragment;
-            if (infoFragment.minimizePhoto())
-                return;
-        }
-        super.onBackPressed();
     }
 
     @Override
@@ -42,7 +31,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnLi
 
         InfoFragment fragment = InfoFragment.getInstance(item.getOwner().getLogin(), item.getName(),
                 item.getOwner().getAvatarUrl());
-        transaction.replace(R.id.mainContainer, fragment);
+        transaction.add(R.id.mainContainer, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onClick(ImageView v) {
+        PhotoFragment fragment = PhotoFragment.getInstance(v);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.mainContainer, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -1,55 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/infoBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#7f000000"
+    android:clickable="true"
+    tools:ignore="KeyboardInaccessibleWidget">
 
-    <ImageView
-        android:id="@+id/infoUserPhoto"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="H,344:194"
-        android:background="#000000"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/infoUsername"
-        android:layout_width="0dp"
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:includeFontPadding="false"
-        android:textSize="21sp"
-        android:textStyle="bold"
-        android:textColor="#232f34"
-        tools:text="name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/infoUserPhoto"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_gravity="center"
+        app:cardElevation="8dp"
+        android:clickable="true">
 
-    <TextView
-        android:id="@+id/infoRepositoryName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:includeFontPadding="false"
-        android:textSize="17sp"
-        android:textColor="#232f34"
-        tools:text="repo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/infoUsername"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+            <ImageView
+                android:id="@+id/infoUserPhoto"
+                android:layout_width="344dp"
+                android:layout_height="194dp"
+                android:scaleType="centerCrop"
+                android:background="#000000"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/infoUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="23dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:includeFontPadding="false"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                android:textColor="#232f34"
+                tools:text="name" />
+
+            <TextView
+                android:id="@+id/infoRepositoryName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="24dp"
+                android:includeFontPadding="false"
+                android:textSize="17sp"
+                android:textColor="#232f34"
+                tools:text="repo" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>
