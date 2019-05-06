@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@color/colorPrimary"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ProgressBar
-        android:id="@+id/toolbarProgress"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:indeterminate="true"
-        android:layout_gravity="end"
-        android:indeterminateTint="#ffffff"
-        android:visibility="gone"
-        />
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="downloading"
+            type="android.databinding.ObservableBoolean" />
+    </data>
 
-</android.support.v7.widget.Toolbar>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:indeterminate="true"
+            android:layout_gravity="end"
+            android:indeterminateTint="#ffffff"
+            android:visibility="@{downloading ? View.VISIBLE : View.GONE}"
+            />
+
+    </android.support.v7.widget.Toolbar>
+
+</layout>

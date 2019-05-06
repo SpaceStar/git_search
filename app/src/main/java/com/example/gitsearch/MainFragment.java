@@ -1,6 +1,7 @@
 package com.example.gitsearch;
 
 import android.content.Context;
+import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,9 +19,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.gitsearch.databinding.ToolbarBinding;
 import com.example.gitsearch.models.SearchResults;
 
 import java.util.HashMap;
@@ -34,8 +35,6 @@ import retrofit2.Response;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class MainFragment extends Fragment {
-    private ProgressBar progressBar;
-
     private RepositoryAdapter content;
     private TextInputLayout searchTextLayout;
     private TextInputEditText searchText;
@@ -44,7 +43,7 @@ public class MainFragment extends Fragment {
     private Toast errorToast;
 
     private boolean haveMoreItems = false;
-    private boolean downloading = false;
+    private ObservableBoolean downloading = new ObservableBoolean(false);
     private String nextUrl;
 
     @Override
@@ -74,7 +73,7 @@ public class MainFragment extends Fragment {
         Toolbar toolbar = fragment.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-        progressBar = fragment.findViewById(R.id.toolbarProgress);
+        ToolbarBinding.bind(toolbar).setDownloading(downloading);
 
         RecyclerView recyclerView = fragment.findViewById(R.id.mainList);
         searchTextLayout = fragment.findViewById(R.id.mainSearchTextLayout);
@@ -88,7 +87,6 @@ public class MainFragment extends Fragment {
         final Callback<SearchResults> resultsHandler = new Callback<SearchResults>() {
             @Override
             public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
-                stopProgress();
                 if (response.isSuccessful()) {
                     List<SearchResults.Item> items = response.body().getItems();
                     if (items.isEmpty()) {
@@ -107,14 +105,13 @@ public class MainFragment extends Fragment {
                 } else {
                     errorToast.show();
                 }
-                downloading = false;
+                downloading.set(false);
             }
 
             @Override
             public void onFailure(Call<SearchResults> call, Throwable t) {
                 errorToast.show();
-                stopProgress();
-                downloading = false;
+                downloading.set(false);
             }
         };
 
@@ -123,15 +120,14 @@ public class MainFragment extends Fragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN &&
                         keyCode == KeyEvent.KEYCODE_ENTER &&
-                        !downloading) {
+                        !downloading.get()) {
                     if (searchText.getText().toString().equals("")) {
                         searchTextLayout.setError(getString(R.string.empty_search_string));
                         return true;
                     }
                     haveMoreItems = false;
-                    downloading = true;
+                    downloading.set(true);
                     content.clearItems();
-                    startProgress();
 
                     api.getService().searchRepos(searchText.getText().toString()).enqueue(resultsHandler);
                     hideKeyboard(v);
@@ -162,10 +158,9 @@ public class MainFragment extends Fragment {
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int firstVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
 
-                if (!downloading && haveMoreItems) {
+                if (!downloading.get() && haveMoreItems) {
                     if ((visibleItemCount+firstVisibleItems) >= totalItemCount - 2) {
-                        downloading = true;
-                        startProgress();
+                        downloading.set(true);
                         api.getService().getByUrl(nextUrl).enqueue(resultsHandler);
                     }
                 }
@@ -192,14 +187,6 @@ public class MainFragment extends Fragment {
             }
         }
         return map;
-    }
-
-    private void startProgress() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void stopProgress() {
-        progressBar.setVisibility(View.GONE);
     }
 
     public interface OnListClickListener {
