@@ -125,7 +125,7 @@ public class MainFragment extends Fragment {
                         keyCode == KeyEvent.KEYCODE_ENTER &&
                         !downloading) {
                     if (searchText.getText().toString().equals("")) {
-                        searchTextLayout.setError(getString(R.string.emptySearchString));
+                        searchTextLayout.setError(getString(R.string.empty_search_string));
                         return true;
                     }
                     haveMoreItems = false;
