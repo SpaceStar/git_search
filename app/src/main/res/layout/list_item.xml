@@ -1,64 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:focusable="true"
-    android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.constraint.ConstraintLayout
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="repository"
+            type="com.example.gitsearch.models.SearchResults.Item" />
+        <variable
+            name="clickListener"
+            type="com.example.gitsearch.MainFragment.OnListClickListener" />
+        <variable
+            name="position"
+            type="int" />
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="72dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:onClick="@{() -> clickListener.onItemSelect(repository)}"
+        android:foreground="?android:attr/selectableItemBackground">
 
-        <ImageView
-            android:id="@+id/itemUserPhoto"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/itemRepositoryName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:includeFontPadding="false"
-            tools:text="Repository"
-            android:textSize="16sp"
-            android:textColor="#000000"
-            app:layout_constraintStart_toEndOf="@+id/itemUserPhoto"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/itemUserPhoto"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                app:loadImage="@{repository.owner.avatarUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/itemUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="40dp"
-            android:includeFontPadding="false"
-            tools:text="Username"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/itemUserPhoto"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:includeFontPadding="false"
+                android:text="@{repository.name}"
+                tools:text="Repository"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                app:layout_constraintStart_toEndOf="@+id/itemUserPhoto"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/itemDivider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#1f000000"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="@id/itemUsername"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <TextView
+                android:id="@+id/itemUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="40dp"
+                android:includeFontPadding="false"
+                android:text="@{repository.owner.login}"
+                tools:text="Username"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@+id/itemUserPhoto"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="#1f000000"
+                android:visibility="@{position == 0 ? View.GONE : View.VISIBLE}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="@id/itemUsername"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-</FrameLayout>
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
+
+</layout>
