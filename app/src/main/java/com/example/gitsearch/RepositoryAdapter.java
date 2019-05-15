@@ -31,6 +31,10 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
         notifyDataSetChanged();
     }
 
+    public List<SearchResults.Item> getItems() {
+        return repositories;
+    }
+
     @NonNull
     @Override
     public RepositoryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {

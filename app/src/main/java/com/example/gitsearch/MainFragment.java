@@ -3,6 +3,7 @@ package com.example.gitsearch;
 import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.example.gitsearch.databinding.ToolbarBinding;
 import com.example.gitsearch.models.SearchResults;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,10 @@ import retrofit2.Response;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class MainFragment extends Fragment {
+    private static final String KEY_CONTENT = "CONTENT";
+    private static final String KEY_MORE_ITEMS = "MORE_ITEMS";
+    private static final String KEY_NEXT_URL = "NEXT_URL";
+
     private RepositoryAdapter content;
     private TextInputLayout searchTextLayout;
     private TextInputEditText searchText;
@@ -83,6 +89,14 @@ public class MainFragment extends Fragment {
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(content);
+
+        if (savedInstanceState != null) {
+            List<SearchResults.Item> list = savedInstanceState.getParcelableArrayList(KEY_CONTENT);
+            if (list != null)
+                content.addItems(list);
+            haveMoreItems = savedInstanceState.getBoolean(KEY_MORE_ITEMS, false);
+            nextUrl = savedInstanceState.getString(KEY_NEXT_URL);
+        }
 
         final Callback<SearchResults> resultsHandler = new Callback<SearchResults>() {
             @Override
@@ -168,6 +182,14 @@ public class MainFragment extends Fragment {
         });
 
         return fragment;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(KEY_CONTENT, new ArrayList<Parcelable>(content.getItems()));
+        outState.putBoolean(KEY_MORE_ITEMS, haveMoreItems);
+        outState.putString(KEY_NEXT_URL, nextUrl);
     }
 
     private void hideKeyboard(View v) {
