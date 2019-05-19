@@ -21,10 +21,10 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
 
         Fragment container = manager.findFragmentById(R.id.mainContainer);
         if (container == null) {
+            FragmentTransaction transaction = manager.beginTransaction();
             MainFragment fragment = new MainFragment();
             transaction.add(R.id.mainContainer, fragment);
             transaction.commit();
